@@ -38,10 +38,10 @@ def global_alignment(seq1, seq2, scoring_function):
         row_vals = []
         for j in range(seq2_length + 1):
             if i == 0:
-                row_vals.append(j*-8)
+                row_vals.append(j*-1)
             else:
                 if j == 0:
-                    row_vals.append(i*-8)
+                    row_vals.append(i*-1)
                 else:
                     row_vals.append(0)
                 
@@ -50,7 +50,7 @@ def global_alignment(seq1, seq2, scoring_function):
     for i in dp_matrix:
         print(i)
 
-    gap_penalty = -8
+    gap_penalty = -1
 
     # Go over each element in the row and score it like 
     for i in range(1, seq1_length + 1):
@@ -73,7 +73,64 @@ def global_alignment(seq1, seq2, scoring_function):
     for i in dp_matrix:
         print(i)
 
-global_alignment("cat", "tree", lambda x, y: [-1, 1][x == y])
+    # start at the bottom corner and get a path
+    seq_1_align = []
+    seq_2_align = []
+
+    i = seq1_length
+    j = seq2_length
+
+    final_score = 0
+
+    while i > 0 or j > 0:
+        score_max = 0
+
+        # determine if gap from top is the best
+        gap_top = dp_matrix[i - 1][j] + gap_penalty
+
+        # determine if gap from left is the best
+        gap_left = dp_matrix[i][j - 1] + gap_penalty
+
+        # determine if the match/mismatch is the best
+        match_mismatch = dp_matrix[i - 1][j - 1] + scoring_function(seq1[i - 1], seq2[j - 1])
+
+        # Now get the score_max
+        score_max = max(gap_left, gap_top, match_mismatch)
+
+        # Based on the score, determine where to go
+        
+        if score_max == gap_top:
+            # Go above (seq1 will change value but seq2 will not)
+            i = i - 1
+            seq_1_align.append(seq1[i])
+            seq_2_align.append('-')
+            final_score += gap_penalty
+
+        elif score_max == gap_left:
+            # Go left (seq2 will change vlaue but seq1 will not)
+            j = j - 1
+            seq_2_align.append(seq2[j])
+            seq_1_align.append('-')
+            final_score += gap_penalty
+        else:
+            # Diagnoal (both of them get a val)
+            i = i - 1
+            j = j - 1
+            seq_1_align.append(seq1[i])
+            seq_2_align.append(seq2[j])
+            final_score += scoring_function(seq1[i], seq2[j])
+
+    seq_1_align.reverse()
+    seq_2_align.reverse()
+
+    seq_1_align_res = "".join(seq_1_align)
+    seq_2_align_res = "".join(seq_2_align)
+    
+    print(seq_1_align_res)
+    print(seq_2_align_res)
+    print(final_score)
+
+global_alignment("abracadabra", "dabarakadara", lambda x, y: [-1, 1][x == y])
 
 def local_alignment(seq1, seq2, scoring_function):
     """Local sequence alignment using the Smith-Waterman algorithm.
