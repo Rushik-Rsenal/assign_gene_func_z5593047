@@ -126,9 +126,7 @@ def global_alignment(seq1, seq2, scoring_function):
     seq_1_align_res = "".join(seq_1_align)
     seq_2_align_res = "".join(seq_2_align)
     
-    print(seq_1_align_res)
-    print(seq_2_align_res)
-    print(final_score)
+    return (seq_1_align_res, seq_2_align_res, float(final_score))
 
 global_alignment("abracadabra", "dabarakadara", lambda x, y: [-1, 1][x == y])
 
