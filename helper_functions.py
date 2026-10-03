@@ -47,8 +47,8 @@ def global_alignment(seq1, seq2, scoring_function):
                 
         dp_matrix.append(row_vals)
 
-    for i in dp_matrix:
-        print(i)
+    # for i in dp_matrix:
+    #     print(i)
 
     gap_penalty = -1
 
@@ -70,8 +70,8 @@ def global_alignment(seq1, seq2, scoring_function):
             # Pick out the max value
             dp_matrix[i][j] = max(match_mistmatch_score, gap_down, gap_left)
 
-    for i in dp_matrix:
-        print(i)
+    # for i in dp_matrix:
+    #     print(i)
 
     # start at the bottom corner and get a path
     seq_1_align = []
